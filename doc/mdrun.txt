@@ -5,7 +5,6 @@
 Table of Contents                                    *mdrun-table-of-contents*
 
 1. mdrun.nvim                                               |mdrun-mdrun.nvim|
-  - Installing                                   |mdrun-mdrun.nvim-installing|
   - Usage                                             |mdrun-mdrun.nvim-usage|
   - Development                                 |mdrun-mdrun.nvim-development|
 
@@ -14,82 +13,6 @@ Table of Contents                                    *mdrun-table-of-contents*
 
 Lua Neovim plugin: run instructions inside fenced code blocks of Markdown
 files.
-
-
-INSTALLING                                       *mdrun-mdrun.nvim-installing*
-
-
-NATIVE PACKAGES ~
-
-Neovim loads every plugin found in a `pack/*/start/` directory of its
-`packpath` (see `:help packages`):
-
->sh
-    git clone https://github.com/XavierBeheydt/mdrun.nvim \
-      ~/.local/share/nvim/site/pack/plugins/start/mdrun.nvim
-<
-
-Run `:helptags ALL` once to index the help. On Windows the same layout lives
-under `$env:LOCALAPPDATA\nvim-data\site`. Clone into `pack/plugins/opt/`
-instead and run `:packadd mdrun.nvim` to load the plugin on demand.
-
-
-VIM.PACK (NEOVIM 0.12+) ~
-
->lua
-    vim.pack.add({
-      {
-        src = "https://github.com/XavierBeheydt/mdrun.nvim",
-        version = vim.version.range("*"), -- latest release
-      },
-    })
-<
-
-
-LAZY.NVIM ~
-
->lua
-    {
-      "XavierBeheydt/mdrun.nvim",
-      version = "*", -- latest release
-    }
-<
-
-
-ROCKS.NVIM ~
-
->vim
-    :Rocks install mdrun.nvim
-<
-
-
-MINI.DEPS ~
-
->lua
-    MiniDeps.add({ source = "XavierBeheydt/mdrun.nvim" })
-<
-
-
-VIM-PLUG ~
-
->vim
-    call plug#begin()
-    Plug 'XavierBeheydt/mdrun.nvim'
-    call plug#end()
-<
-
-Then run `:PlugInstall`.
-
-
-PAQ-NVIM ~
-
->lua
-    require("paq")({
-      "XavierBeheydt/mdrun.nvim",
-    })
-<
-
-Then run `:PaqInstall`.
 
 
 USAGE                                                 *mdrun-mdrun.nvim-usage*
