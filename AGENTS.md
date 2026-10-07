@@ -75,11 +75,10 @@ Conventions:
 - Never commit directly on `main`. Work on another branch (e.g. `dev`, or a
   worktree) and bring changes into `main` through a merge or a PR.
 - `main` is protected (pull request required, merge commit only) and is the
-  default branch; `dev` cannot be deleted. Never enable "delete branch on
-  merge", it would delete `dev` after a `dev` → `main` PR.
-- Never delete `dev`, locally or on the remote, not even after a `dev` →
-  `main` merge: it is the permanent working branch. Cleaning up after a merge
-  removes only the merged feature or fix branch and its worktree.
+  default branch. `dev` is the permanent working branch: never delete it,
+  locally or on the remote, even after a `dev` → `main` merge, and never enable
+  "delete branch on merge". Cleaning up after a merge removes only the merged
+  feature or fix branch and its worktree.
 - Releases are tagged by hand, once the `dev` → `main` PR is merged and CI is
   green on `main`. The tag must point at the merge commit on `main`, never at
   `dev`:
