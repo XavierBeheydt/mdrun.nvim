@@ -77,16 +77,25 @@ Conventions:
 - `main` is protected (pull request required, merge commit only) and is the
   default branch; `dev` cannot be deleted. Never enable "delete branch on
   merge", it would delete `dev` after a `dev` → `main` PR.
-- Releases are automatic: merge `dev` into `main` through a PR. Once
-  `lint-test` passes on `main`, the `release` workflow computes the next
-  `vX.Y.Z` from the Conventional Commits since the last tag (`feat` → minor,
-  `fix` or `perf` → patch, `!` or `BREAKING CHANGE` → major, anything else
-  releases nothing; the first release is `v0.1.0`), creates the tag and the
-  GitHub release, and uploads the rock to LuaRocks. Never tag by hand. `main`
-  therefore always holds the latest release. The vimdoc is generated on `dev`
-  by CI, so it is already up to date when the PR is merged.
+- Releases are tagged by hand, once the `dev` → `main` PR is merged and CI is
+  green on `main`. The tag must point at the merge commit on `main`, never at
+  `dev`:
+
+  ```sh
+  git switch main && git pull
+  git tag -a vX.Y.Z -m "vX.Y.Z"
+  git push origin vX.Y.Z
+  ```
+
+  The tag triggers the `release` workflow, which uploads the rock to LuaRocks
+  and creates the GitHub release. Choose the number from the Conventional
+  Commits since the last tag (`feat` → minor, `fix` or `perf` → patch, `!` or
+  `BREAKING CHANGE` → major). Tag right after the merge: `main` holds the
+  latest release only once it is tagged. Never create or push a release tag
+  unless the user asks. The vimdoc is generated on `dev` by CI, so it is
+  already up to date when the PR is merged.
 - A squash merge keeps the PR title as the commit message, so PR titles follow
-  Conventional Commits too: the release version is computed from them.
+  Conventional Commits too: they feed the release notes and the version choice.
 - Branch worktrees live under `.worktrees/`. Use them per
   feature or fix instead of juggling branches in the main tree.
 - Commit messages follow Conventional Commits:
