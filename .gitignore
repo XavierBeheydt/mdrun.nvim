@@ -1,0 +1,4 @@
+# Copyright (c) 2026 Xavier Beheydt <xavier.beheydt@gmail.com>
+
+# Git worktrees
+.worktrees/

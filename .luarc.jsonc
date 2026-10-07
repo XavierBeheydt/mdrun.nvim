@@ -1,0 +1,7 @@
+// Copyright (c) 2026 Xavier Beheydt <xavier.beheydt@gmail.com>
+
+{
+    "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
+    "runtime.version": "LuaJIT",
+    "diagnostics.globals": ["vim", "describe", "it", "before_each", "after_each", "pending"]
+}

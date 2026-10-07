@@ -1,0 +1,12 @@
+# Copyright (c) 2026 Xavier Beheydt <xavier.beheydt@gmail.com>
+
+# StyLua — canonical code style for this repository.
+# Format with: stylua .
+# AGENTS.md points here; do not duplicate these settings elsewhere.
+
+column_width = 120
+line_endings = "Unix"
+indent_type = "Spaces"
+indent_width = 4
+quote_style = "AutoPreferDouble"
+call_parentheses = "Always"
