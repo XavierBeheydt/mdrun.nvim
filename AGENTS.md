@@ -72,19 +72,26 @@ Conventions:
 
 ## Git workflow
 
-- Never commit directly on `latest`. Work on another branch (e.g. `dev`, or a
-  worktree) and bring changes into `latest` through a merge or a PR.
-- `latest` is protected (pull request required, merge commit only) and is the
-  default branch; `dev` cannot be deleted. Never enable "delete branch on
-  merge", it would delete `dev` after a `dev` → `latest` PR.
-- Releases: merge `dev` into `latest` through a PR, then tag the merge commit
-  `vX.Y.Z`; the tag triggers the LuaRocks upload. The vimdoc is generated on
-  `dev` by CI, so it is already up to date when the PR is merged.
+- Never commit directly on `main`. Work on another branch (e.g. `dev`, or a
+  worktree) and bring changes into `main` through a merge or a PR.
+- `main` is protected (pull request required, merge commit only) and is the
+  default branch. `dev` is the permanent working branch: never delete it,
+  locally or on the remote, even after a `dev` → `main` merge, and never enable
+  "delete branch on merge". Cleaning up after a merge removes only the merged
+  feature or fix branch and its worktree.
+- Releases are tagged by hand as semver `vX.Y.Z`, right after the `dev` →
+  `main` PR is merged and CI is green: tag the merge commit of `main`, never
+  `dev`. The tag runs the `release` workflow. Never tag unless the user asks.
+
+  ```sh
+  git switch main && git pull
+  git tag -a vX.Y.Z -m "vX.Y.Z" && git push origin vX.Y.Z
+  ```
 - Branch worktrees live under `.worktrees/`. Use them per
   feature or fix instead of juggling branches in the main tree.
-- Commit messages follow Conventional Commits:
-  <https://www.conventionalcommits.org/en/v1.0.0/>. Read that spec when in
-  doubt.
+- Commit messages and PR titles (a squash merge keeps the title) follow
+  Conventional Commits: <https://www.conventionalcommits.org/en/v1.0.0/>. Read
+  that spec when in doubt.
 - Keep commits small and atomic.
 - No AI co-author: commits and PRs carry no `Co-Authored-By` trailer or
   "generated with" line for an AI, unless the user explicitly asks for it.
