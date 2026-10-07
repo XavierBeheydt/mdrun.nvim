@@ -2,7 +2,23 @@
 
 name: lint-test
 
-on: [push, pull_request]
+on:
+  push:
+    paths-ignore:
+      - README.md
+      - doc/**
+      - AGENTS.md
+      - CLAUDE.md
+      - .agents/**
+      - .claude
+  pull_request:
+    paths-ignore:
+      - README.md
+      - doc/**
+      - AGENTS.md
+      - CLAUDE.md
+      - .agents/**
+      - .claude
 
 permissions:
   contents: read
