@@ -6,6 +6,7 @@ on:
   push:
     paths-ignore:
       - README.md
+      - LICENSE
       - doc/**
       - AGENTS.md
       - CLAUDE.md
@@ -14,6 +15,7 @@ on:
   pull_request:
     paths-ignore:
       - README.md
+      - LICENSE
       - doc/**
       - AGENTS.md
       - CLAUDE.md
