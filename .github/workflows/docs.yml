@@ -7,6 +7,8 @@ on:
     # not latest: it is protected, the bot cannot push there
     branches:
       - dev
+    paths:
+      - README.md
   workflow_dispatch:
 
 permissions:
