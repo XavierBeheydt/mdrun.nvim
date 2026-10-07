@@ -77,10 +77,16 @@ Conventions:
 - `main` is protected (pull request required, merge commit only) and is the
   default branch; `dev` cannot be deleted. Never enable "delete branch on
   merge", it would delete `dev` after a `dev` → `main` PR.
-- Releases: merge `dev` into `main` through a PR, then tag the merge commit
-  `vX.Y.Z`; the tag triggers the LuaRocks upload. `main` therefore always
-  holds the latest release. The vimdoc is generated on `dev` by CI, so it is
-  already up to date when the PR is merged.
+- Releases are automatic: merge `dev` into `main` through a PR. Once
+  `lint-test` passes on `main`, the `release` workflow computes the next
+  `vX.Y.Z` from the Conventional Commits since the last tag (`feat` → minor,
+  `fix` or `perf` → patch, `!` or `BREAKING CHANGE` → major, anything else
+  releases nothing; the first release is `v0.1.0`), creates the tag and the
+  GitHub release, and uploads the rock to LuaRocks. Never tag by hand. `main`
+  therefore always holds the latest release. The vimdoc is generated on `dev`
+  by CI, so it is already up to date when the PR is merged.
+- A squash merge keeps the PR title as the commit message, so PR titles follow
+  Conventional Commits too: the release version is computed from them.
 - Branch worktrees live under `.worktrees/`. Use them per
   feature or fix instead of juggling branches in the main tree.
 - Commit messages follow Conventional Commits:
