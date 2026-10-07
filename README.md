@@ -14,6 +14,8 @@ Markdown files.
 
 <!-- markdownlint-disable MD036 -->
 
+<!-- panvimdoc-ignore-start -->
+
 ## Installing
 
 ### Native packages
@@ -81,6 +83,8 @@ require("paq")({
 ```
 
 Then run `:PaqInstall`.
+
+<!-- panvimdoc-ignore-end -->
 
 ## Usage
 
