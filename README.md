@@ -55,8 +55,9 @@ vim.pack.add({
 })
 ```
 
-To pin a release, set `version` to its tag, or to a range such as
-`vim.version.range("^0.1")` for the 0.1.x releases:
+To pin a release, set `version` to its tag, or to a range:
+`vim.version.range("^0.1")` follows the 0.1.x releases and
+`vim.version.range("*")` the latest release.
 
 ```lua
 vim.pack.add({
@@ -73,8 +74,8 @@ vim.pack.add({
 }
 ```
 
-To pin a release, use `tag`, or a semver range such as `version = "^0.1"` for
-the 0.1.x releases:
+To pin a release, use `tag`, or a semver range: `version = "^0.1"` follows the
+0.1.x releases and `version = "*"` the latest release.
 
 ```lua
 {
@@ -115,7 +116,8 @@ Plug 'XavierBeheydt/mdrun.nvim'
 call plug#end()
 ```
 
-Then run `:PlugInstall`. To pin a release, set `tag`:
+Then run `:PlugInstall`. To pin a release, set `tag` to its tag, or to `'*'`
+for the latest release:
 
 ```vim
 Plug 'XavierBeheydt/mdrun.nvim', { 'tag': 'v0.1.0' }
