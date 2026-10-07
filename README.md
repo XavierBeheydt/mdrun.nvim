@@ -5,6 +5,7 @@
 [![CI](https://github.com/XavierBeheydt/mdrun.nvim/actions/workflows/lint-test.yml/badge.svg)](https://github.com/XavierBeheydt/mdrun.nvim/actions/workflows/lint-test.yml)
 [![Version](https://img.shields.io/github/v/tag/XavierBeheydt/mdrun.nvim?sort=semver&label=version)](https://github.com/XavierBeheydt/mdrun.nvim/tags)
 [![LuaRocks](https://img.shields.io/luarocks/v/xavierbeheydt/mdrun.nvim?logo=lua&color=purple)](https://luarocks.org/modules/xavierbeheydt/mdrun.nvim)
+[![Neovim](https://img.shields.io/github/v/release/neovim/neovim?display_name=tag&label=Neovim%20tested&logo=neovim&logoColor=white&color=57A143)](https://github.com/neovim/neovim/releases)
 
 <!-- panvimdoc-ignore-end -->
 
