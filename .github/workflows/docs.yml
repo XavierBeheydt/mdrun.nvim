@@ -4,8 +4,10 @@ name: docs
 
 on:
   push:
+    # not latest: it is protected, the bot cannot push there
     branches:
-      - main
+      - dev
+  workflow_dispatch:
 
 permissions:
   contents: write
