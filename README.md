@@ -16,7 +16,71 @@ Markdown files.
 
 ## Installing
 
-<!-- TODO -->
+### Native packages
+
+Neovim loads every plugin found in a `pack/*/start/` directory of its
+`packpath` (see `:help packages`):
+
+```sh
+git clone https://github.com/XavierBeheydt/mdrun.nvim \
+  ~/.local/share/nvim/site/pack/plugins/start/mdrun.nvim
+```
+
+Run `:helptags ALL` once to index the help. On Windows the same layout lives
+under `$env:LOCALAPPDATA\nvim-data\site`. Clone into `pack/plugins/opt/`
+instead and run `:packadd mdrun.nvim` to load the plugin on demand.
+
+### vim.pack (Neovim 0.12+)
+
+```lua
+vim.pack.add({
+  {
+    src = "https://github.com/XavierBeheydt/mdrun.nvim",
+    version = vim.version.range("*"), -- latest release
+  },
+})
+```
+
+### lazy.nvim
+
+```lua
+{
+  "XavierBeheydt/mdrun.nvim",
+  version = "*", -- latest release
+}
+```
+
+### rocks.nvim
+
+```vim
+:Rocks install mdrun.nvim
+```
+
+### mini.deps
+
+```lua
+MiniDeps.add({ source = "XavierBeheydt/mdrun.nvim" })
+```
+
+### vim-plug
+
+```vim
+call plug#begin()
+Plug 'XavierBeheydt/mdrun.nvim'
+call plug#end()
+```
+
+Then run `:PlugInstall`.
+
+### paq-nvim
+
+```lua
+require("paq")({
+  "XavierBeheydt/mdrun.nvim",
+})
+```
+
+Then run `:PaqInstall`.
 
 ## Usage
 
