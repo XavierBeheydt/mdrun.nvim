@@ -18,6 +18,11 @@ Markdown files.
 
 ## Installing
 
+The `main` branch always holds the latest release. Releases are git tags named
+`vX.Y.Z` (see the [tags](https://github.com/XavierBeheydt/mdrun.nvim/tags)).
+Each manager below can pin one, shown after its install snippet: replace
+`v0.1.0` with the tag you want.
+
 ### Native packages
 
 Neovim loads every plugin found in a `pack/*/start/` directory of its
@@ -32,6 +37,13 @@ Run `:helptags ALL` once to index the help. On Windows the same layout lives
 under `$env:LOCALAPPDATA\nvim-data\site`. Clone into `pack/plugins/opt/`
 instead and run `:packadd mdrun.nvim` to load the plugin on demand.
 
+To pin a release, check out its tag (`git checkout main` goes back to the
+latest):
+
+```sh
+git -C ~/.local/share/nvim/site/pack/plugins/start/mdrun.nvim checkout v0.1.0
+```
+
 ### vim.pack (Neovim 0.12+)
 
 ```lua
@@ -40,6 +52,15 @@ vim.pack.add({
     src = "https://github.com/XavierBeheydt/mdrun.nvim",
     version = vim.version.range("*"), -- latest release
   },
+})
+```
+
+To pin a release, set `version` to its tag, or to a range such as
+`vim.version.range("^0.1")` for the 0.1.x releases:
+
+```lua
+vim.pack.add({
+  { src = "https://github.com/XavierBeheydt/mdrun.nvim", version = "v0.1.0" },
 })
 ```
 
@@ -52,16 +73,38 @@ vim.pack.add({
 }
 ```
 
+To pin a release, use `tag`, or a semver range such as `version = "^0.1"` for
+the 0.1.x releases:
+
+```lua
+{
+  "XavierBeheydt/mdrun.nvim",
+  tag = "v0.1.0",
+}
+```
+
 ### rocks.nvim
 
 ```vim
 :Rocks install mdrun.nvim
 ```
 
+To pin a release, add its version, which is the tag without the `v`:
+
+```vim
+:Rocks install mdrun.nvim 0.1.0
+```
+
 ### mini.deps
 
 ```lua
 MiniDeps.add({ source = "XavierBeheydt/mdrun.nvim" })
+```
+
+To pin a release, set `checkout` to its tag:
+
+```lua
+MiniDeps.add({ source = "XavierBeheydt/mdrun.nvim", checkout = "v0.1.0" })
 ```
 
 ### vim-plug
@@ -72,7 +115,11 @@ Plug 'XavierBeheydt/mdrun.nvim'
 call plug#end()
 ```
 
-Then run `:PlugInstall`.
+Then run `:PlugInstall`. To pin a release, set `tag`:
+
+```vim
+Plug 'XavierBeheydt/mdrun.nvim', { 'tag': 'v0.1.0' }
+```
 
 ### paq-nvim
 
@@ -82,7 +129,19 @@ require("paq")({
 })
 ```
 
-Then run `:PaqInstall`.
+Then run `:PaqInstall`. paq-nvim has no `tag` option, it only follows a
+branch. To pin a release, check its tag out by hand and pin the package so
+updates leave it alone:
+
+```sh
+git -C ~/.local/share/nvim/site/pack/paqs/start/mdrun.nvim checkout v0.1.0
+```
+
+```lua
+require("paq")({
+  { "XavierBeheydt/mdrun.nvim", pin = true },
+})
+```
 
 <!-- panvimdoc-ignore-end -->
 
