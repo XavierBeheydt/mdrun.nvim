@@ -79,30 +79,19 @@ Conventions:
   locally or on the remote, even after a `dev` → `main` merge, and never enable
   "delete branch on merge". Cleaning up after a merge removes only the merged
   feature or fix branch and its worktree.
-- Releases are tagged by hand, once the `dev` → `main` PR is merged and CI is
-  green on `main`. The tag must point at the merge commit on `main`, never at
-  `dev`:
+- Releases are tagged by hand as semver `vX.Y.Z`, right after the `dev` →
+  `main` PR is merged and CI is green: tag the merge commit of `main`, never
+  `dev`. The tag runs the `release` workflow. Never tag unless the user asks.
 
   ```sh
   git switch main && git pull
-  git tag -a vX.Y.Z -m "vX.Y.Z"
-  git push origin vX.Y.Z
+  git tag -a vX.Y.Z -m "vX.Y.Z" && git push origin vX.Y.Z
   ```
-
-  The tag triggers the `release` workflow, which uploads the rock to LuaRocks
-  and creates the GitHub release. Choose the number from the Conventional
-  Commits since the last tag (`feat` → minor, `fix` or `perf` → patch, `!` or
-  `BREAKING CHANGE` → major). Tag right after the merge: `main` holds the
-  latest release only once it is tagged. Never create or push a release tag
-  unless the user asks. The vimdoc is generated on `dev` by CI, so it is
-  already up to date when the PR is merged.
-- A squash merge keeps the PR title as the commit message, so PR titles follow
-  Conventional Commits too: they feed the release notes and the version choice.
 - Branch worktrees live under `.worktrees/`. Use them per
   feature or fix instead of juggling branches in the main tree.
-- Commit messages follow Conventional Commits:
-  <https://www.conventionalcommits.org/en/v1.0.0/>. Read that spec when in
-  doubt.
+- Commit messages and PR titles (a squash merge keeps the title) follow
+  Conventional Commits: <https://www.conventionalcommits.org/en/v1.0.0/>. Read
+  that spec when in doubt.
 - Keep commits small and atomic.
 - No AI co-author: commits and PRs carry no `Co-Authored-By` trailer or
   "generated with" line for an AI, unless the user explicitly asks for it.
