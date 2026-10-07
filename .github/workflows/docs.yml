@@ -4,7 +4,7 @@ name: docs
 
 on:
   push:
-    # not latest: it is protected, the bot cannot push there
+    # not main: it is protected, the bot cannot push there
     branches:
       - dev
     paths:

@@ -72,14 +72,15 @@ Conventions:
 
 ## Git workflow
 
-- Never commit directly on `latest`. Work on another branch (e.g. `dev`, or a
-  worktree) and bring changes into `latest` through a merge or a PR.
-- `latest` is protected (pull request required, merge commit only) and is the
+- Never commit directly on `main`. Work on another branch (e.g. `dev`, or a
+  worktree) and bring changes into `main` through a merge or a PR.
+- `main` is protected (pull request required, merge commit only) and is the
   default branch; `dev` cannot be deleted. Never enable "delete branch on
-  merge", it would delete `dev` after a `dev` → `latest` PR.
-- Releases: merge `dev` into `latest` through a PR, then tag the merge commit
-  `vX.Y.Z`; the tag triggers the LuaRocks upload. The vimdoc is generated on
-  `dev` by CI, so it is already up to date when the PR is merged.
+  merge", it would delete `dev` after a `dev` → `main` PR.
+- Releases: merge `dev` into `main` through a PR, then tag the merge commit
+  `vX.Y.Z`; the tag triggers the LuaRocks upload. `main` therefore always
+  holds the latest release. The vimdoc is generated on `dev` by CI, so it is
+  already up to date when the PR is merged.
 - Branch worktrees live under `.worktrees/`. Use them per
   feature or fix instead of juggling branches in the main tree.
 - Commit messages follow Conventional Commits:
