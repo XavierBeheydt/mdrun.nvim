@@ -1,4 +1,4 @@
-# AGENTS.md — Instructions for AI agents
+# CLAUDE.md — Instructions for AI agents
 
 ## Project
 
@@ -62,18 +62,25 @@ Conventions:
 
 ## Agent configuration
 
-- `AGENTS.md` (this file) is the single source of truth for agent instructions.
-- `CLAUDE.md` is a symlink pointing at it — edit `AGENTS.md`, never `CLAUDE.md`.
+- `CLAUDE.md` (this file) is the single source of truth for agent instructions.
+- `AGENTS.md` is a symlink pointing at it — edit `CLAUDE.md`, never `AGENTS.md`.
 - Extra agent assets (subagents, slash commands, tool-specific settings) live in
-  `.agents/`, the canonical directory.
-- `.claude` is a **committed symlink** to `.agents` (like `CLAUDE.md`), so a
-  fresh clone is ready to use by AI agents as-is. Never commit regular files
-  under `.claude/` — edit `.agents/` and commit there.
+  `.claude/`, the canonical directory. It must stay a real directory: Claude
+  Code refuses to create worktrees when `.claude` is a symlink.
+- `.agents` is a **committed symlink** to `.claude` (like `AGENTS.md`), so a
+  fresh clone is ready to use by any AI agent as-is. Never commit regular files
+  under `.agents/` — edit `.claude/` and commit there.
 
 ## Git workflow
 
 - Never commit directly on `latest`. Work on another branch (e.g. `dev`, or a
   worktree) and bring changes into `latest` through a merge or a PR.
+- `latest` is protected (pull request required, merge commit only) and is the
+  default branch; `dev` cannot be deleted. Never enable "delete branch on
+  merge", it would delete `dev` after a `dev` → `latest` PR.
+- Releases: merge `dev` into `latest` through a PR, then tag the merge commit
+  `vX.Y.Z`; the tag triggers the LuaRocks upload. The vimdoc is generated on
+  `dev` by CI, so it is already up to date when the PR is merged.
 - Branch worktrees live under `.worktrees/`. Use them per
   feature or fix instead of juggling branches in the main tree.
 - Commit messages follow Conventional Commits:

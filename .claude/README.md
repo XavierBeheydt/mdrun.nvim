@@ -1,12 +1,13 @@
-# .agents — canonical agent assets
+# .claude — canonical agent assets
 
 This directory is the canonical home for extra AI-agent assets: subagents,
 slash commands, tool-specific settings.
 
-- `AGENTS.md` (repo root) is the single source of truth for instructions.
-- `CLAUDE.md` (repo root) is a symlink to `AGENTS.md` — do not edit it.
-- Claude Code reads this directory through the committed symlink
-  `.claude -> .agents`. Like `CLAUDE.md`, this symlink is part of the repo,
-  so a fresh clone is ready to use by AI agents as-is.
+- `CLAUDE.md` (repo root) is the single source of truth for instructions.
+- `AGENTS.md` (repo root) is a symlink to `CLAUDE.md` — do not edit it.
+- Other agents read this directory through the committed symlink
+  `.agents -> .claude`. Like `AGENTS.md`, this symlink is part of the repo,
+  so a fresh clone is ready to use by any AI agent as-is.
 
-Commit changes here (`.agents/`), never under `.claude/`.
+`.claude` must stay a real directory: Claude Code refuses to create worktrees
+when it is a symlink. Commit changes here (`.claude/`), never under `.agents/`.
