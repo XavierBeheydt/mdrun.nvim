@@ -3,19 +3,89 @@
 name: release
 
 on:
-  push:
-    tags:
-      - "v*"
+  workflow_run:
+    workflows: [lint-test]
+    types: [completed]
+    branches: [main]
 
 permissions:
   contents: read
 
+concurrency: release
+
 jobs:
-  luarocks-upload:
+  release:
+    # a fork pull request from a branch named main would also match the filter
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v7
-      - name: LuaRocks Upload
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+
+      - name: Next version
+        id: version
+        env:
+          TARGET_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          nl=$'\n'
+
+          # an already tagged commit is a retry: publish that tag again
+          tag=$(git tag --points-at "$TARGET_SHA" --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n1)
+          if [ -z "$tag" ]; then
+            last=$(git describe --tags --abbrev=0 --match 'v[0-9]*.[0-9]*.[0-9]*' "$TARGET_SHA" 2>/dev/null || true)
+            if [ -z "$last" ]; then
+              tag=v0.1.0
+            else
+              rank=0 # 1 patch, 2 minor, 3 major
+              while IFS= read -r -d '' msg; do
+                subject=${msg%%$'\n'*}
+                r=0
+                if [[ $subject =~ ^[a-z]+(\([^\)]*\))?!: ]] ||
+                  [[ "$nl$msg" == *"${nl}BREAKING CHANGE:"* || "$nl$msg" == *"${nl}BREAKING-CHANGE:"* ]]; then
+                  r=3
+                elif [[ $subject =~ ^feat(\([^\)]*\))?: ]]; then
+                  r=2
+                elif [[ $subject =~ ^(fix|perf)(\([^\)]*\))?: ]]; then
+                  r=1
+                fi
+                if (( r > rank )); then rank=$r; fi
+              done < <(git log --no-merges --format='%B%x00' "$last..$TARGET_SHA")
+
+              IFS=. read -r major minor patch <<< "${last#v}"
+              case $rank in
+                3) tag="v$((major + 1)).0.0" ;;
+                2) tag="v$major.$((minor + 1)).0" ;;
+                1) tag="v$major.$minor.$((patch + 1))" ;;
+              esac
+            fi
+          fi
+          echo "tag=${tag:-}" >> "$GITHUB_OUTPUT"
+
+      - name: GitHub release
+        if: steps.version.outputs.tag != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+          TARGET_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          gh release view "$TAG" > /dev/null 2>&1 ||
+            gh release create "$TAG" --target "$TARGET_SHA" --title "$TAG" --generate-notes
+
+      - name: LuaRocks upload
+        if: steps.version.outputs.tag != ''
         uses: nvim-neorocks/luarocks-tag-release@v7
         env:
           LUAROCKS_API_KEY: ${{ secrets.LUAROCKS_API_KEY }}
+          # build the rock from the tag, not from the main branch this run is on
+          GITHUB_REF_TYPE_OVERRIDE: tag
+          GITHUB_REF_NAME_OVERRIDE: ${{ steps.version.outputs.tag }}
+        with:
+          version: ${{ steps.version.outputs.tag }}
