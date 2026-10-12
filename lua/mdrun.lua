@@ -16,21 +16,25 @@ function M.setup(args)
     M.config = vim.tbl_deep_extend("force", M.config, args or {})
 end
 
----@class Context
----@field line1 number first line of the command range (1-based)
----@field line2 number last line of the command range (1-based, inclusive)
----@field line_count number number of lines in the buffer
+---@alias MDRunCmd { line1: number, line2: number } arguments of the user command
+
+---@param cmd MDRunCmd
+---@param open string window command opening the runner, e.g. "split"
+local function run(cmd, open)
+    local ctx = require("mdrun.context").new(cmd)
+    vim.notify(vim.inspect({ open = open, ctx = ctx }), vim.log.levels.DEBUG)
+end
 
 ---Run the fenced code block in a split below the current window (:split).
----@param ctx Context
-function M.split(ctx)
-    vim.notify(vim.inspect(ctx), vim.log.levels.DEBUG)
+---@param cmd MDRunCmd arguments of the :MDRun user command
+function M.split(cmd)
+    run(cmd, "split")
 end
 
 ---Run the fenced code block in a vertical split beside the current window (:vsplit).
----@param ctx Context
-function M.vsplit(ctx)
-    vim.notify(vim.inspect(ctx), vim.log.levels.DEBUG)
+---@param cmd MDRunCmd arguments of the :VMDRun user command
+function M.vsplit(cmd)
+    run(cmd, "vsplit")
 end
 
 return M
