@@ -19,7 +19,11 @@ describe("context", function()
         assert.are.equal(5, ctx.line_count)
     end)
 
-    it("rejects a range that is not 1 <= line1 <= line2", function()
+    it("notifies an error and returns nil for a range that is not 1 <= line1 <= line2", function()
+        local notify, level = vim.notify, nil
+        vim.notify = function(_, lvl)
+            level = lvl
+        end
         for _, cmd in ipairs({
             { line1 = 0, line2 = 3 },
             { line1 = -2, line2 = 3 },
@@ -27,10 +31,11 @@ describe("context", function()
             { line1 = 1 },
             {},
         }) do
-            assert.has_error(function()
-                Context.new(cmd)
-            end)
+            level = nil
+            assert.is_nil(Context.new(cmd))
+            assert.are.equal(vim.log.levels.ERROR, level)
         end
+        vim.notify = notify
     end)
 
     it("accepts line1 == line2 (no range) and has no text between", function()
