@@ -36,12 +36,14 @@ local function find_end(ctx, start)
     end
 end
 
----Find the fenced code block at the start of the command range.
+---@class Context
+---@field language string? fence language, set by the parser
+
+---Narrow `ctx` to the fenced code block at the start of its range: `line1` and
+---`line2` become the opening and closing fences, `language` is set.
 ---Notifies and returns nil when there is none or it is not closed.
 ---@param ctx Context
----@return string? language
----@return number? first line of the opening fence (1-based)
----@return number? last line of the closing fence (1-based)
+---@return Context? ctx
 function M.parse(ctx)
     local first, language = find_start(ctx, ctx.line1)
     if not first then
@@ -53,7 +55,8 @@ function M.parse(ctx)
         vim.notify("mdrun: the fenced code block is not closed", vim.log.levels.WARN)
         return nil
     end
-    return language, first, last
+    ctx.line1, ctx.line2, ctx.language = first, last, language
+    return ctx
 end
 
 return M

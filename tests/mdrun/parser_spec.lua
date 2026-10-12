@@ -32,13 +32,21 @@ describe("parser", function()
     end)
 
     local function parse(line)
-        return parser.parse(Context.new({ line1 = line, line2 = line }))
+        local ctx = parser.parse(Context.new({ line1 = line, line2 = line }))
+        if ctx then
+            return ctx.language, ctx.line1, ctx.line2
+        end
     end
 
     it("finds the block from the opening fence or the body", function()
         for _, line in ipairs({ 2, 3 }) do
             assert.are.same({ "python", 2, 4 }, { parse(line) })
         end
+    end)
+
+    it("narrows the context so that text() is the body of the block", function()
+        local ctx = parser.parse(Context.new({ line1 = 3, line2 = 3 }))
+        assert.are.equal("a = 1", ctx:text())
     end)
 
     it("reads an indented fence and a language after a space", function()
