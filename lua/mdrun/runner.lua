@@ -5,14 +5,11 @@
 ---@class Runner
 local M = {}
 
----@param ctx Context
+---@param ctx Context already narrowed to a fenced block by the parser, with its language
 ---@param open string window command opening the runner, "split" or "vsplit"
 ---@param size number fraction of the editor area used by the terminal
 ---@return number? buf terminal buffer, nil when nothing ran
 function M.run(ctx, open, size)
-    if not require("mdrun.parser").parse(ctx) then
-        return nil
-    end
     local interp = require("mdrun.interpreter").find(ctx.language)
     if not interp then
         return nil

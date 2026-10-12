@@ -3,6 +3,7 @@
 local assert = require("luassert")
 local runner = require("mdrun.runner")
 local Context = require("mdrun.context")
+local parser = require("mdrun.parser")
 
 describe("runner", function()
     local notify
@@ -13,7 +14,7 @@ describe("runner", function()
     local function ctx_for(lines, line)
         vim.cmd("enew!")
         vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
-        return Context.new({ line1 = line, line2 = line })
+        return assert(parser.parse(Context.new({ line1 = line, line2 = line })))
     end
 
     before_each(function()
@@ -46,11 +47,6 @@ describe("runner", function()
         local ctx = ctx_for({ "```sh", "true", "```" }, 2)
         assert(runner.run(ctx, "split", 0.5))
         assert.are.equal(math.floor(vim.o.lines * 0.5), vim.api.nvim_win_get_height(0))
-    end)
-
-    it("opens nothing without a fenced block", function()
-        assert.is_nil(runner.run(ctx_for({ "plain text" }, 1), "split", 0.35))
-        assert.are.equal(1, #vim.api.nvim_tabpage_list_wins(0))
     end)
 
     it("opens nothing for an unsupported language", function()
