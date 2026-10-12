@@ -13,6 +13,14 @@ describe("interpreter", function()
         end
     end
 
+    ---@param language string
+    ---@return Interpreter
+    local function found(language)
+        local interp = interpreter.find(language)
+        assert(interp, "no interpreter found for " .. language)
+        return interp
+    end
+
     before_each(function()
         executable, notify, notified = vim.fn.executable, vim.notify, nil
         vim.notify = function(msg, level)
@@ -33,7 +41,8 @@ describe("interpreter", function()
 
     it("returns the first available executable with its own arguments", function()
         only({ "python", "node" })
-        local py, js = interpreter.find("python"), interpreter.find("js")
+        local py = found("python")
+        local js = found("js")
         assert.are.equal("python", py.exe)
         assert.are.same({ "-c" }, py.args)
         assert.are.equal("node", js.exe)
@@ -43,12 +52,12 @@ describe("interpreter", function()
 
     it("prefers the first executable of the list", function()
         only({ "python3", "python" })
-        assert.are.equal("python3", interpreter.find("py").exe)
+        assert.are.equal("python3", found("py").exe)
     end)
 
     it("builds the command line of the interpreter", function()
         only({ "node" })
-        assert.are.same({ "node", "-e", "console.log(1)" }, interpreter.find("js"):cmd("console.log(1)"))
+        assert.are.same({ "node", "-e", "console.log(1)" }, found("js"):cmd("console.log(1)"))
     end)
 
     it("notifies an error asking to install the interpreter when none is available", function()
