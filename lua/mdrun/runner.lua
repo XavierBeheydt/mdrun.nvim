@@ -15,12 +15,11 @@ function M.run(ctx, open, size)
         return nil
     end
 
-    local code = ctx:text()
     local total = open == "split" and vim.o.lines or vim.o.columns
     vim.cmd(("%d%s"):format(math.floor(total * size), open))
     vim.cmd.enew()
 
-    if vim.fn.jobstart(interp:cmd(code), { term = true }) <= 0 then
+    if vim.fn.jobstart(interp:cmd(ctx:text()), { term = true }) <= 0 then
         vim.notify(("mdrun: failed to start '%s'"):format(interp.exe), vim.log.levels.ERROR)
         vim.cmd.close()
         return nil
