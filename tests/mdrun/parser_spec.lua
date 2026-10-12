@@ -9,6 +9,7 @@ describe("parser", function()
 
     before_each(function()
         notify, level = vim.notify, nil
+        ---@diagnostic disable-next-line: duplicate-set-field
         vim.notify = function(_, lvl)
             level = lvl
         end
