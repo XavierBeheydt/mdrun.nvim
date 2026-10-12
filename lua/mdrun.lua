@@ -22,9 +22,6 @@ end
 ---@param open string window command opening the runner, e.g. "split"
 local function run(cmd, open)
     local ctx = require("mdrun.context").new(cmd)
-    if not ctx then
-        return
-    end
     vim.notify(vim.inspect({ open = open, ctx = ctx }), vim.log.levels.DEBUG)
 end
 
