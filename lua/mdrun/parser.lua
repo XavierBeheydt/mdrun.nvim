@@ -1,9 +1,7 @@
 -- Copyright (c) 2026 Xavier Beheydt <xavier.beheydt@gmail.com>
 
--- MODULE: Fenced code bloc parser TODO: make a right description as module documentation
-local api = vim.api
-
 ---@module "mdrun.parser"
+---Locate the fenced code block under the cursor.
 ---@class FenceParser
 local M = {}
 
@@ -11,51 +9,51 @@ local M = {}
 ---
 ---The first fence met decides: with a language it is the start; without one it
 ---closes a block, so there is none.
+---@param ctx Context
 ---@param curpos number 1-based cursor line
----@param line_count number number of lines in the buffer
 ---@return number?, string? line 1-based line of the opening fence, language
-local function find_start(curpos, line_count)
-    curpos = math.min(curpos, line_count)
-    if curpos <= 0 then
-        return nil
+local function find_start(ctx, curpos)
+    for line = math.min(curpos, ctx.line_count), 1, -1 do
+        local fence, language = ctx:get_line(line):match("^[ \t]*(```)[ \t]*(%S*)")
+        if fence then
+            if language == "" then
+                return nil
+            end
+            return line, language
+        end
     end
-
-    local text = api.nvim_buf_get_lines(0, curpos - 1, curpos, false)[1]
-    local fence, language = text:match("^[ \t]*(```)[ \t]*(%S*)")
-    if not fence then
-        return find_start(curpos - 1, line_count)
-    end
-    if language == "" then
-        return nil
-    end
-    return curpos, language
 end
 
 ---Search downward from the line after `start` for the closing fence.
+---@param ctx Context
 ---@param start number 1-based line of the opening fence
----@param line_count number number of lines in the buffer
 ---@return number? line 1-based line of the closing fence
-local function find_end(start, line_count)
-    local line = start + 1
-    if line > line_count then
-        return nil
+local function find_end(ctx, start)
+    for line = start + 1, ctx.line_count do
+        if ctx:get_line(line):match("^[ \t]*```") then
+            return line
+        end
     end
-
-    local text = api.nvim_buf_get_lines(0, line - 1, line, false)[1]
-    if text:match("^[ \t]*```") then
-        return line
-    end
-    return find_end(line, line_count)
 end
 
--- HACK: improve function name?
--- TODO: make comment doc for the following function
----@return nil | string, number, number
-function M.parse(curpos, line_count)
-    if find_start(curpos, line_count) then
-        print("TODO")
-        return "python", 1, 2
+---Find the fenced code block at the start of the command range.
+---Notifies and returns nil when there is none or it is not closed.
+---@param ctx Context
+---@return string? language
+---@return number? first line of the opening fence (1-based)
+---@return number? last line of the closing fence (1-based)
+function M.parse(ctx)
+    local first, language = find_start(ctx, ctx.line1)
+    if not first then
+        vim.notify("mdrun: no fenced code block with a language under the cursor", vim.log.levels.WARN)
+        return nil
     end
+    local last = find_end(ctx, first)
+    if not last then
+        vim.notify("mdrun: the fenced code block is not closed", vim.log.levels.WARN)
+        return nil
+    end
+    return language, first, last
 end
 
 return M
