@@ -22,7 +22,7 @@ end
 ---@param open string window command opening the runner, e.g. "split"
 local function run(cmd, open)
     local ctx = require("mdrun.context").new(cmd)
-    require("mdrun.runner").run(ctx, open, M.config.split_size)
+    vim.notify(vim.inspect({ open = open, ctx = ctx }), vim.log.levels.DEBUG)
 end
 
 ---Run the fenced code block in a split below the current window (:split).
