@@ -161,3 +161,27 @@ list them:
 - `just fmt` — format in place
 - `just check` — lint + test (what CI runs)
 
+### Trying the plugin from a checkout
+
+Start Neovim with the working tree on the `runtimepath`, without installing
+anything (run from the repository root):
+
+```sh
+nvim --cmd "set rtp+=." -c "runtime plugin/mdrun.lua"
+```
+
+Add `--clean` to skip your own config.
+
+Or load it into a running session:
+
+```vim
+:set rtp+=/path/to/mdrun.nvim
+:runtime plugin/mdrun.lua
+```
+
+`require` caches modules: after editing the code, drop them from the cache
+before requiring the plugin again.
+
+```vim
+:lua for k in pairs(package.loaded) do if k:match("^mdrun") then package.loaded[k] = nil end end
+```
