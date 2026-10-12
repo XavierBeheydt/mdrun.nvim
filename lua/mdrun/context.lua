@@ -7,6 +7,7 @@ local api = vim.api
 ---@field line1 number first line of the command range (1-based)
 ---@field line2 number last line of the command range (1-based, inclusive)
 ---@field line_count number number of lines in the buffer
+---@field language string? fence language, set by the parser
 local Context = {}
 Context.__index = Context
 
