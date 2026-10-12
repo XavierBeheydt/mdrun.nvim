@@ -167,7 +167,7 @@ Start Neovim with the working tree on the `runtimepath`, without installing
 anything (run from the repository root):
 
 ```sh
-nvim --cmd "set rtp+=." -c "runtime plugin/mdrun.lua"
+nvim --cmd "set rtp+=." -c "runtime plugin/mdrun.lua" -c "set ft=markdown" test.md
 ```
 
 Add `--clean` to skip your own config.
@@ -177,7 +177,13 @@ Or load it into a running session:
 ```vim
 :set rtp+=/path/to/mdrun.nvim
 :runtime plugin/mdrun.lua
+:set ft=markdown
 ```
+
+`:MDRun` and `:VMDRun` are buffer-local and created on the `FileType`
+autocmd for `markdown`. Buffers already open when the plugin is sourced do not
+have them until the filetype is detected again, hence `:set ft=markdown` (or
+`:e`). Check the current filetype with `:set ft?`.
 
 `require` caches modules: after editing the code, drop them from the cache
 before requiring the plugin again.
