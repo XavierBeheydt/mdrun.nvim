@@ -90,13 +90,7 @@ function M.find(language)
             return candidate
         end
     end
-    local exes = vim.tbl_map(function(candidate)
-        return candidate.exe
-    end, candidates)
-    vim.notify(
-        ("mdrun: no interpreter found for '%s': install %s"):format(language, table.concat(exes, " or ")),
-        vim.log.levels.ERROR
-    )
+    vim.notify(("mdrun: no interpreter found for '%s'"):format(language), vim.log.levels.ERROR)
     return nil
 end
 

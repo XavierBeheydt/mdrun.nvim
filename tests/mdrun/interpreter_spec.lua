@@ -60,10 +60,10 @@ describe("interpreter", function()
         assert.are.same({ "node", "-e", "console.log(1)" }, found("js"):cmd("console.log(1)"))
     end)
 
-    it("notifies an error asking to install the interpreter when none is available", function()
+    it("notifies an error when no executable is available", function()
         only({})
         assert.is_nil(interpreter.find("python"))
-        assert.are.equal("mdrun: no interpreter found for 'python': install python3 or python", notified.msg)
+        assert.are.equal("mdrun: no interpreter found for 'python'", notified.msg)
         assert.are.equal(vim.log.levels.ERROR, notified.level)
     end)
 
