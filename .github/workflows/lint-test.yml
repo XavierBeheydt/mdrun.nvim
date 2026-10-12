@@ -4,6 +4,10 @@ name: lint-test
 
 on:
   push:
+    # feature branches are covered by their pull_request run
+    branches:
+      - dev
+      - main
     paths-ignore:
       - README.md
       - LICENSE
