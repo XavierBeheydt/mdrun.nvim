@@ -11,11 +11,15 @@ local Context = {}
 Context.__index = Context
 
 ---@param cmd { line1: number, line2: number } user command arguments
----@return Context
+---@return Context? ctx nil, after a notification, when the range is invalid
 function Context.new(cmd)
     local line1, line2 = cmd.line1, cmd.line2
     if type(line1) ~= "number" or type(line2) ~= "number" or line1 < 1 or line2 < line1 then
-        error(("invalid range: line1=%s, line2=%s (need 1 <= line1 <= line2)"):format(line1, line2), 2)
+        vim.notify(
+            ("mdrun: invalid range: line1=%s, line2=%s (need 1 <= line1 <= line2)"):format(line1, line2),
+            vim.log.levels.ERROR
+        )
+        return nil
     end
 
     local buf = api.nvim_get_current_buf()
