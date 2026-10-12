@@ -32,8 +32,8 @@ describe("parser", function()
     end)
 
     local function parse(line)
-        local ctx = parser.parse(Context.new({ line1 = line, line2 = line }))
-        if ctx then
+        local ctx = Context.new({ line1 = line, line2 = line })
+        if parser.parse(ctx) then
             return ctx.language, ctx.line1, ctx.line2
         end
     end
@@ -45,7 +45,8 @@ describe("parser", function()
     end)
 
     it("narrows the context so that text() is the body of the block", function()
-        local ctx = parser.parse(Context.new({ line1 = 3, line2 = 3 }))
+        local ctx = Context.new({ line1 = 3, line2 = 3 })
+        assert.is_truthy(parser.parse(ctx))
         assert.are.equal("a = 1", ctx:text())
     end)
 

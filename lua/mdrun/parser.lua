@@ -36,9 +36,6 @@ local function find_end(ctx, start)
     end
 end
 
----@class Context
----@field language string? fence language, set by the parser
-
 ---Narrow `ctx` to the fenced code block at the start of its range: `line1` and
 ---`line2` become the opening and closing fences, `language` is set.
 ---Notifies and returns nil when there is none or it is not closed.
