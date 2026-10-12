@@ -22,28 +22,30 @@ describe("setup", function()
 end)
 
 describe("commands", function()
-    local notify, notified
+    local runner, run, called
 
     before_each(function()
         vim.cmd("enew!")
         vim.api.nvim_buf_set_lines(0, 0, -1, false, { "```python", "print(1)", "```" })
-        notify, notified = vim.notify, nil
-        vim.notify = function(msg)
-            notified = msg
+        runner, called = require("mdrun.runner"), nil
+        run = runner.run
+        runner.run = function(ctx, open, size)
+            called = { ctx = ctx, open = open, size = size }
         end
     end)
 
     after_each(function()
-        vim.notify = notify
+        runner.run = run
     end)
 
     for fn, open in pairs({ split = "split", vsplit = "vsplit" }) do
-        it(fn .. " builds a context from the user command arguments", function()
+        it(fn .. " hands a context built from the user command to the runner", function()
             mdrun[fn]({ line1 = 1, line2 = 3 })
-            assert.is_truthy(notified:find(('open = "%s"'):format(open), 1, true))
-            assert.is_truthy(notified:find("line1 = 1", 1, true))
-            assert.is_truthy(notified:find("line2 = 3", 1, true))
-            assert.is_truthy(notified:find("line_count = 3", 1, true))
+            assert.are.equal(open, called.open)
+            assert.are.equal(mdrun.config.split_size, called.size)
+            assert.are.equal(1, called.ctx.line1)
+            assert.are.equal(3, called.ctx.line2)
+            assert.are.equal(3, called.ctx.line_count)
         end)
 
         it(fn .. " rejects an invalid range", function()
