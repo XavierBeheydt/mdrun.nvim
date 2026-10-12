@@ -6,9 +6,26 @@
 ---@class Interpreter
 ---@field exe string executable name
 ---@field args string[] arguments placed before the code, they differ between interpreters
+local Interpreter = {}
+Interpreter.__index = Interpreter
 
----@class InterpreterModule
-local M = {}
+---@param exe string
+---@param args string[]
+---@return Interpreter
+function Interpreter.new(exe, args)
+    return setmetatable({ exe = exe, args = args }, Interpreter)
+end
+
+---@return boolean
+function Interpreter:available()
+    return vim.fn.executable(self.exe) == 1
+end
+
+---@param code string
+---@return string[] argv ready for vim.system / jobstart
+function Interpreter:cmd(code)
+    return vim.list_extend(vim.list_extend({ self.exe }, self.args), { code })
+end
 
 ---@param args string[]
 ---@param ... string executables, by order of preference
@@ -16,7 +33,7 @@ local M = {}
 local function interpreters(args, ...)
     local found = {}
     for _, exe in ipairs({ ... }) do
-        found[#found + 1] = { exe = exe, args = args }
+        found[#found + 1] = Interpreter.new(exe, args)
     end
     return found
 end
@@ -49,30 +66,38 @@ local list = {
     lua = lua,
 }
 
+---@class InterpreterModule
+local M = {}
+
 ---@param language string fence language, as written after the opening fence
 ---@return boolean
 function M.is_supported(language)
     return list[language:lower()] ~= nil
 end
 
----First configured interpreter whose executable is available.
+---First configured interpreter whose executable is available; notifies an error otherwise.
 ---@param language string fence language, as written after the opening fence
----@return Interpreter? interpreter
----@return string? err set when nothing can run the language
+---@return Interpreter?
 function M.find(language)
     local candidates = list[language:lower()]
     if not candidates then
-        return nil, ("no interpreter configured for '%s'"):format(language)
+        vim.notify(("mdrun: no interpreter configured for '%s'"):format(language), vim.log.levels.ERROR)
+        return nil
     end
 
-    local exes = {}
     for _, candidate in ipairs(candidates) do
-        if vim.fn.executable(candidate.exe) == 1 then
+        if candidate:available() then
             return candidate
         end
-        exes[#exes + 1] = candidate.exe
     end
-    return nil, ("no interpreter found for '%s': install %s"):format(language, table.concat(exes, " or "))
+    local exes = vim.tbl_map(function(candidate)
+        return candidate.exe
+    end, candidates)
+    vim.notify(
+        ("mdrun: no interpreter found for '%s': install %s"):format(language, table.concat(exes, " or ")),
+        vim.log.levels.ERROR
+    )
+    return nil
 end
 
 return M

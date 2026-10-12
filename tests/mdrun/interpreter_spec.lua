@@ -4,7 +4,7 @@ local assert = require("luassert")
 local interpreter = require("mdrun.interpreter")
 
 describe("interpreter", function()
-    local executable
+    local executable, notify, notified
 
     ---@param available string[]
     local function only(available)
@@ -14,11 +14,15 @@ describe("interpreter", function()
     end
 
     before_each(function()
-        executable = vim.fn.executable
+        executable, notify, notified = vim.fn.executable, vim.notify, nil
+        vim.notify = function(msg, level)
+            notified = { msg = msg, level = level }
+        end
     end)
 
     after_each(function()
         vim.fn.executable = executable
+        vim.notify = notify
     end)
 
     it("tells whether a language is configured, ignoring the case", function()
@@ -29,8 +33,12 @@ describe("interpreter", function()
 
     it("returns the first available executable with its own arguments", function()
         only({ "python", "node" })
-        assert.are.same({ exe = "python", args = { "-c" } }, interpreter.find("python"))
-        assert.are.same({ exe = "node", args = { "-e" } }, interpreter.find("js"))
+        local py, js = interpreter.find("python"), interpreter.find("js")
+        assert.are.equal("python", py.exe)
+        assert.are.same({ "-c" }, py.args)
+        assert.are.equal("node", js.exe)
+        assert.are.same({ "-e" }, js.args)
+        assert.is_nil(notified)
     end)
 
     it("prefers the first executable of the list", function()
@@ -38,16 +46,21 @@ describe("interpreter", function()
         assert.are.equal("python3", interpreter.find("py").exe)
     end)
 
-    it("asks to install the interpreter when none is available", function()
-        only({})
-        local found, err = interpreter.find("python")
-        assert.is_nil(found)
-        assert.are.equal("no interpreter found for 'python': install python3 or python", err)
+    it("builds the command line of the interpreter", function()
+        only({ "node" })
+        assert.are.same({ "node", "-e", "console.log(1)" }, interpreter.find("js"):cmd("console.log(1)"))
     end)
 
-    it("reports a language that is not configured", function()
-        local found, err = interpreter.find("cobol")
-        assert.is_nil(found)
-        assert.are.equal("no interpreter configured for 'cobol'", err)
+    it("notifies an error asking to install the interpreter when none is available", function()
+        only({})
+        assert.is_nil(interpreter.find("python"))
+        assert.are.equal("mdrun: no interpreter found for 'python': install python3 or python", notified.msg)
+        assert.are.equal(vim.log.levels.ERROR, notified.level)
+    end)
+
+    it("notifies an error for a language that is not configured", function()
+        assert.is_nil(interpreter.find("cobol"))
+        assert.are.equal("mdrun: no interpreter configured for 'cobol'", notified.msg)
+        assert.are.equal(vim.log.levels.ERROR, notified.level)
     end)
 end)
