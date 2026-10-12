@@ -22,6 +22,7 @@ local function find_start(ctx, curpos)
             return line, language
         end
     end
+    return nil
 end
 
 ---Search downward from the line after `start` for the closing fence.
@@ -34,6 +35,7 @@ local function find_end(ctx, start)
             return line
         end
     end
+    return nil
 end
 
 ---Narrow `ctx` to the fenced code block at the start of its range: `line1` and
