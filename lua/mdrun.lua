@@ -16,16 +16,21 @@ function M.setup(args)
     M.config = vim.tbl_deep_extend("force", M.config, args or {})
 end
 
+---@class Context
+---@field line1 number first line of the command range (1-based)
+---@field line2 number last line of the command range (1-based, inclusive)
+---@field line_count number number of lines in the buffer
+
 ---Run the fenced code block in a split below the current window (:split).
----@param range table line1 and line2 of the block (1-based, inclusive)
-function M.split(range)
-    vim.notify(vim.inspect(range), vim.log.levels.DEBUG)
+---@param ctx Context
+function M.split(ctx)
+    vim.notify(vim.inspect(ctx), vim.log.levels.DEBUG)
 end
 
 ---Run the fenced code block in a vertical split beside the current window (:vsplit).
----@param range table line1 and line2 of the block (1-based, inclusive)
-function M.vsplit(range)
-    vim.notify(vim.inspect(range), vim.log.levels.DEBUG)
+---@param ctx Context
+function M.vsplit(ctx)
+    vim.notify(vim.inspect(ctx), vim.log.levels.DEBUG)
 end
 
 return M
