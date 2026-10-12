@@ -90,7 +90,10 @@ function M.find(language)
             return candidate
         end
     end
-    vim.notify(("mdrun: no interpreter found for '%s'"):format(language), vim.log.levels.ERROR)
+    vim.notify(
+        ("mdrun: runtime for '%s' not found, is it installed and in your PATH?"):format(language),
+        vim.log.levels.ERROR
+    )
     return nil
 end
 

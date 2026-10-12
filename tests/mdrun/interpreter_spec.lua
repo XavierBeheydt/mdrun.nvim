@@ -63,7 +63,7 @@ describe("interpreter", function()
     it("notifies an error when no executable is available", function()
         only({})
         assert.is_nil(interpreter.find("python"))
-        assert.are.equal("mdrun: no interpreter found for 'python'", notified.msg)
+        assert.are.equal("mdrun: runtime for 'python' not found, is it installed and in your PATH?", notified.msg)
         assert.are.equal(vim.log.levels.ERROR, notified.level)
     end)
 
