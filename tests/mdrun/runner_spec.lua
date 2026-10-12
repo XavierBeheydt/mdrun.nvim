@@ -27,14 +27,13 @@ describe("runner", function()
     end)
 
     it("runs the block in a terminal split below", function()
-        local ctx = ctx_for({ "```sh", "echo hello", "```" }, 2)
+        local ctx = ctx_for({ "```sh", "exit 3", "```" }, 2)
         local buf = runner.run(ctx, "split", 0.35)
         assert(buf, "runner returned no buffer")
         assert.are.equal("terminal", vim.bo[buf].buftype)
         assert.are.equal(2, #vim.api.nvim_tabpage_list_wins(0))
-        assert.is_true(vim.wait(2000, function()
-            return table.concat(vim.api.nvim_buf_get_lines(buf, 0, -1, false), "\n"):find("hello") ~= nil
-        end))
+        -- The exit code proves the code ran; the rendered text is not portable (ConPTY on Windows).
+        assert.are.equal(3, vim.fn.jobwait({ vim.b[buf].terminal_job_id }, 5000)[1])
     end)
 
     it("opens a side window with vsplit", function()
