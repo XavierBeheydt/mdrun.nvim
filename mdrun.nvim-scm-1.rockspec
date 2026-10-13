@@ -1,5 +1,6 @@
 -- Copyright (c) 2026 Xavier Beheydt <xavier.beheydt@gmail.com>
 
+---@diagnostic disable: lowercase-global
 -- Template for luarocks-tag-release: it fills in the version and the source tag on `vX.Y.Z`.
 rockspec_format = "3.0"
 package = "mdrun.nvim"
