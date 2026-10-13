@@ -5,17 +5,21 @@ name: release
 on:
   push:
     tags:
-      - "v*"
+      - "v[0-9]+.[0-9]+.[0-9]+"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  luarocks-upload:
+  release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - name: LuaRocks Upload
+      - name: LuaRocks upload
         uses: nvim-neorocks/luarocks-tag-release@v7
         env:
           LUAROCKS_API_KEY: ${{ secrets.LUAROCKS_API_KEY }}
+      - name: GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --generate-notes

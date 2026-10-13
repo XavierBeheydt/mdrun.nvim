@@ -6,6 +6,7 @@ set shell := ["bash", "-u", "-o", "pipefail", "-c"]
 
 TESTS_INIT := "tests/minimal_init.lua"
 TESTS_DIR := "tests/"
+ROCKSPEC := "mdrun.nvim-scm-1.rockspec"
 
 # List available recipes
 [default]
@@ -29,5 +30,10 @@ lint:
 fmt:
     stylua --color always --glob "**/*.lua" .
 
+# Lint the rockspec and install it into a throwaway tree (needs luarocks)
+rockspec:
+    luarocks lint {{ROCKSPEC}}
+    tree=$(mktemp -d) && trap 'rm -rf "$tree"' EXIT && luarocks --tree "$tree" make {{ROCKSPEC}}
+
 # CI in one shot
-check: fmt lint test
+check: fmt lint rockspec test
