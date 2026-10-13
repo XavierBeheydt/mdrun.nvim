@@ -12,6 +12,12 @@
 Lua Neovim plugin: run instructions inside fenced code blocks of
 Markdown files.
 
+<!-- panvimdoc-ignore-start -->
+
+![Demo: running a code block with :MDRun and :VMDRun](demo/demo.gif)
+
+<!-- panvimdoc-ignore-end -->
+
 <!-- markdownlint-disable MD036 -->
 
 <!-- panvimdoc-ignore-start -->
