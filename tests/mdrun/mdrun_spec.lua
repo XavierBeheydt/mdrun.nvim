@@ -22,11 +22,16 @@ describe("setup", function()
 end)
 
 describe("commands", function()
-    local notify, notified
+    local runner, run, called, notify, notified
 
     before_each(function()
         vim.cmd("enew!")
-        vim.api.nvim_buf_set_lines(0, 0, -1, false, { "```python", "print(1)", "```" })
+        vim.api.nvim_buf_set_lines(0, 0, -1, false, { "text", "```python", "print(1)", "```" })
+        runner, called = require("mdrun.runner"), nil
+        run = runner.run
+        runner.run = function(ctx, open, size)
+            called = { ctx = ctx, open = open, size = size }
+        end
         notify, notified = vim.notify, nil
         vim.notify = function(msg)
             notified = msg
@@ -34,16 +39,24 @@ describe("commands", function()
     end)
 
     after_each(function()
+        runner.run = run
         vim.notify = notify
     end)
 
     for fn, open in pairs({ split = "split", vsplit = "vsplit" }) do
-        it(fn .. " builds a context from the user command arguments", function()
-            mdrun[fn]({ line1 = 1, line2 = 3 })
-            assert.is_truthy(notified:find(('open = "%s"'):format(open), 1, true))
-            assert.is_truthy(notified:find("line1 = 1", 1, true))
-            assert.is_truthy(notified:find("line2 = 3", 1, true))
-            assert.is_truthy(notified:find("line_count = 3", 1, true))
+        it(fn .. " hands the parsed block to the runner", function()
+            mdrun[fn]({ line1 = 3, line2 = 3 })
+            assert.are.equal(open, called.open)
+            assert.are.equal(mdrun.config.split_size, called.size)
+            assert.are.equal(2, called.ctx.line1)
+            assert.are.equal(4, called.ctx.line2)
+            assert.are.equal("python", called.ctx.language)
+        end)
+
+        it(fn .. " does not run outside a fenced block", function()
+            mdrun[fn]({ line1 = 1, line2 = 1 })
+            assert.is_nil(called)
+            assert.is_truthy(notified)
         end)
 
         it(fn .. " rejects an invalid range", function()
