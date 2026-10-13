@@ -36,4 +36,4 @@ rockspec:
     tree=$(mktemp -d) && trap 'rm -rf "$tree"' EXIT && luarocks --tree "$tree" make {{ROCKSPEC}}
 
 # CI in one shot
-check: fmt lint test
+check: fmt lint rockspec test
