@@ -149,7 +149,72 @@ require("paq")({
 
 ## Usage
 
-<!-- TODO -->
+Put the cursor inside a fenced code block that names a language, then run a
+command. The block runs in a terminal window opened by the command:
+
+````markdown
+```python
+print("hello")
+```
+````
+
+Requires Neovim 0.11+ and the interpreter of the block in your `PATH`.
+
+### Commands
+
+Both commands are local to Markdown buffers (created on the `markdown`
+`FileType`):
+
+| Command   | Terminal opened in                         |
+| --------- | ------------------------------------------ |
+| `:MDRun`  | a split below the current window           |
+| `:VMDRun` | a vertical split beside the current window |
+
+The block is searched upward from the first line of the range, so the cursor
+can be on the opening fence or on any line of the body, but not on the closing
+fence. Nothing runs, and a warning is shown, when the cursor is outside a
+block, when the block is not closed or when its fence has no language. Every run opens a new terminal window.
+
+The plugin sets no mapping. For example:
+
+```lua
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function(event)
+    vim.keymap.set("n", "<leader>r", "<cmd>MDRun<cr>", { buffer = event.buf })
+  end,
+})
+```
+
+### Languages
+
+The fence language, case-insensitive, picks the interpreter. When several are
+listed, the first one found in your `PATH` is used.
+
+| Fence language                       | Interpreter                  |
+| ------------------------------------ | ---------------------------- |
+| `sh`                                 | `sh -c`                      |
+| `bash`, `shell`                      | `bash -c`                    |
+| `zsh`                                | `zsh -c`                     |
+| `fish`                               | `fish -c`                    |
+| `python`, `python3`, `py`            | `python3` or `python` (`-c`) |
+| `javascript`, `js`, `node`, `nodejs` | `node` or `nodejs` (`-e`)    |
+| `ruby`, `rb`                         | `ruby -e`                    |
+| `lua`                                | `lua` or `luajit` (`-e`)     |
+
+The code of the block is passed to the interpreter as its last argument.
+
+### Setup
+
+Calling `setup` is optional: the defaults below apply without it.
+
+```lua
+require("mdrun").setup({
+  -- Fraction of the editor area taken by the terminal window:
+  -- height for :MDRun, width for :VMDRun.
+  split_size = 0.35,
+})
+```
 
 ## Development
 
