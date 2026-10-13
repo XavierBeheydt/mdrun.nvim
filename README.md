@@ -149,39 +149,78 @@ require("paq")({
 
 ## Usage
 
-<!-- TODO -->
+Put the cursor inside a fenced code block that names a language, then run a
+command. The block runs in a terminal window opened by the command:
 
-## Development
+````markdown
+```python
+print("hello")
+```
+````
 
-Tasks are driven by [just](https://github.com/casey/just) — run `just` to
-list them:
+Requires Neovim 0.11+ and the interpreter of the block in your `PATH`.
 
-- `just test` — run the test suite (plenary + busted, headless nvim)
-- `just lint` — check formatting (stylua)
-- `just fmt` — format in place
-- `just check` — lint + test (what CI runs)
+### Commands
 
-### Trying the plugin from a checkout
+Both commands are local to Markdown buffers (created on the `markdown`
+`FileType`):
 
-Start Neovim with the working tree on the `runtimepath`, without installing
-anything (run from the repository root):
+| Command   | Terminal opened in                         |
+| --------- | ------------------------------------------ |
+| `:MDRun`  | a split below the current window           |
+| `:VMDRun` | a vertical split beside the current window |
 
-```sh
-nvim --cmd "set rtp+=." -c "runtime plugin/mdrun.lua"
+The block is searched upward from the first line of the range, so the cursor
+can be on the opening fence or on any line of the body, but not on the closing
+fence. Nothing runs, and a warning is shown, when the cursor is outside a
+block, when the block is not closed or when its fence has no language. Every run opens a new terminal window.
+
+The plugin sets no mapping. For example:
+
+```lua
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function(event)
+    vim.keymap.set("n", "<leader>r", "<cmd>MDRun<cr>", { buffer = event.buf })
+  end,
+})
 ```
 
-Add `--clean` to skip your own config.
+### Languages
 
-Or load it into a running session:
+The fence language, case-insensitive, picks the interpreter. When several are
+listed, the first one found in your `PATH` is used.
 
-```vim
-:set rtp+=/path/to/mdrun.nvim
-:runtime plugin/mdrun.lua
+| Fence language                       | Interpreter                  |
+| ------------------------------------ | ---------------------------- |
+| `sh`                                 | `sh -c`                      |
+| `bash`, `shell`                      | `bash -c`                    |
+| `zsh`                                | `zsh -c`                     |
+| `fish`                               | `fish -c`                    |
+| `python`, `python3`, `py`            | `python3` or `python` (`-c`) |
+| `javascript`, `js`, `node`, `nodejs` | `node` or `nodejs` (`-e`)    |
+| `ruby`, `rb`                         | `ruby -e`                    |
+| `lua`                                | `lua` or `luajit` (`-e`)     |
+
+The code of the block is passed to the interpreter as its last argument.
+
+### Setup
+
+Calling `setup` is optional: the defaults below apply without it.
+
+```lua
+require("mdrun").setup({
+  -- Fraction of the editor area taken by the terminal window:
+  -- height for :MDRun, width for :VMDRun.
+  split_size = 0.35,
+})
 ```
 
-`require` caches modules: after editing the code, drop them from the cache
-before requiring the plugin again.
+<!-- panvimdoc-ignore-start -->
 
-```vim
-:lua for k in pairs(package.loaded) do if k:match("^mdrun") then package.loaded[k] = nil end end
-```
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development tasks and how to try
+the plugin from a checkout.
+
+<!-- panvimdoc-ignore-end -->
