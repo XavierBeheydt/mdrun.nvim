@@ -37,3 +37,11 @@ rockspec:
 
 # CI in one shot
 check: fmt lint rockspec test
+
+# Record the demo by hand; quit nvim to stop (needs asciinema)
+demo-rec:
+    asciinema rec --overwrite demo/demo.rec -c 'nvim --clean -n --cmd "set rtp+=." -c "runtime plugin/mdrun.lua" -c "set ft=markdown" demo/demo.md'
+
+# Render the demo GIF from the recording (needs agg)
+demo:
+    agg demo/demo.rec demo/demo.gif

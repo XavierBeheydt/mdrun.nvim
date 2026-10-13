@@ -87,8 +87,15 @@ Conventions:
   git switch main && git pull
   git tag -a vX.Y.Z -m "vX.Y.Z" && git push origin vX.Y.Z
   ```
-- Branch worktrees live under `.worktrees/`. Use them per
-  feature or fix instead of juggling branches in the main tree.
+- Branch worktrees live under `.worktrees/`, ignored by git. Use them per
+  feature or fix instead of juggling branches in the main tree. Name each
+  worktree after its branch, so the path carries the Conventional Commits
+  type, and remove it once its branch is merged:
+
+  ```sh
+  git worktree add -b feat/my-new-feature .worktrees/feat/my-new-feature dev
+  git worktree remove .worktrees/feat/my-new-feature
+  ```
 - Commit messages and PR titles (a squash merge keeps the title) follow
   Conventional Commits: <https://www.conventionalcommits.org/en/v1.0.0/>. Read
   that spec when in doubt.
