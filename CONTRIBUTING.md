@@ -11,7 +11,7 @@ list them:
 - `just lint` — check formatting (stylua)
 - `just fmt` — format in place
 - `just rockspec` — lint the rockspec and test-install it (needs luarocks)
-- `just check` — lint + test (what CI runs)
+- `just check` — format, lint, rockspec and test (CI runs lint and test only)
 
 ## Trying the plugin from a checkout
 
