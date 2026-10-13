@@ -159,6 +159,7 @@ list them:
 - `just test` — run the test suite (plenary + busted, headless nvim)
 - `just lint` — check formatting (stylua)
 - `just fmt` — format in place
+- `just rockspec` — lint the rockspec and test-install it (needs luarocks)
 - `just check` — lint + test (what CI runs)
 
 ### Trying the plugin from a checkout
