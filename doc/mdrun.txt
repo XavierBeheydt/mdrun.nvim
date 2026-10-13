@@ -40,8 +40,9 @@ Both commands are local to Markdown buffers (created on the `markdown`
 The block is searched upward from the first line of the range, so the cursor
 can be on the opening fence or on any line of the body, but not on the closing
 fence. Nothing runs, and a warning is shown, when the cursor is outside a
-block, when the block is not closed or when its fence has no language. Every
-run opens a new terminal window.
+block, when the block is not closed or when its fence has no language.
+
+Every run opens a new terminal window.
 
 The plugin sets no mapping. For example:
 
