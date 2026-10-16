@@ -24,7 +24,8 @@ end
 ---@param open string window command opening the runner, e.g. "split"
 local function run(cmd, open)
     local ctx = require("mdrun.parser").parse(require("mdrun.context").new(cmd))
-    if ctx and require("mdrun.guard").allow(ctx, M.config.confirm) then
+    local allowed = ctx and require("mdrun.guard").allow(ctx, M.config.confirm)
+    if ctx and allowed then
         require("mdrun.runner").run(ctx, open, M.config.split_size)
     end
 end
