@@ -190,8 +190,8 @@ Every run opens a new terminal window.
 > [!WARNING]
 > There is no sandbox: blocks run on your computer with your permissions, so a
 > destructive command does real damage. By default, every run
-> asks for confirmation and shows the code first. The first run also shows a
-> one-time warning about this. Disable the confirmation with
+> asks for confirmation and shows the code first. The first run of each
+> Neovim session also shows a warning about this. Disable the confirmation with
 > `confirm = false` in [Setup](#setup).
 
 The plugin sets no mapping. For example:

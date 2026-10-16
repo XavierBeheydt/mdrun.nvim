@@ -1,18 +1,18 @@
 -- Copyright (c) 2026 Xavier Beheydt <xavier.beheydt@gmail.com>
 
 local assert = require("luassert")
-local guard = require("mdrun.guard")
+local guard
 local Context = require("mdrun.context")
 local parser = require("mdrun.parser")
 
 describe("guard", function()
-    local notify, confirm, state, notified, answer, asked
+    local notify, confirm, notified, answer, asked
 
     before_each(function()
         vim.cmd("enew!")
         vim.api.nvim_buf_set_lines(0, 0, -1, false, { "```sh", "rm -rf x", "```" })
-        state = vim.fn.tempname()
-        vim.env.XDG_STATE_HOME = state
+        package.loaded["mdrun.guard"] = nil
+        guard = require("mdrun.guard")
         notify, notified = vim.notify, {}
         vim.notify = function(msg)
             table.insert(notified, msg)
@@ -26,8 +26,6 @@ describe("guard", function()
 
     after_each(function()
         vim.notify, vim.fn.confirm = notify, confirm
-        vim.env.XDG_STATE_HOME = nil
-        vim.fn.delete(state, "rf")
     end)
 
     local function ctx()
@@ -40,7 +38,7 @@ describe("guard", function()
         assert.are.equal(0, #asked)
     end)
 
-    it("warns about the missing sandbox only once", function()
+    it("warns about the missing sandbox only once per session", function()
         guard.allow(ctx(), false)
         guard.allow(ctx(), false)
         assert.are.equal(1, #notified)
