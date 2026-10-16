@@ -183,6 +183,13 @@ block, when the block is not closed or when its fence has no language.
 
 Every run opens a new terminal window.
 
+> [!WARNING]
+> There is no sandbox: blocks run on your computer with your permissions, so a
+> destructive command such as `rm -rf` does real damage. By default, every run
+> asks for confirmation and shows the code first. The first run also shows a
+> one-time warning about this. Disable the confirmation with
+> `confirm = false` in [Setup](#setup).
+
 The plugin sets no mapping. For example:
 
 ```lua
@@ -221,6 +228,8 @@ require("mdrun").setup({
   -- Fraction of the editor area taken by the terminal window:
   -- height for :MDRun, width for :VMDRun.
   split_size = 0.35,
+  -- Ask for confirmation before running a block. Set to false at your own risk.
+  confirm = true,
 })
 ```
 

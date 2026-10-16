@@ -22,7 +22,7 @@ describe("setup", function()
 end)
 
 describe("commands", function()
-    local runner, run, called, notify, notified
+    local runner, run, called, notify, notified, guard, allow
 
     before_each(function()
         vim.cmd("enew!")
@@ -32,6 +32,10 @@ describe("commands", function()
         runner.run = function(ctx, open, size)
             called = { ctx = ctx, open = open, size = size }
         end
+        guard, allow = require("mdrun.guard"), require("mdrun.guard").allow
+        guard.allow = function()
+            return true
+        end
         notify, notified = vim.notify, nil
         vim.notify = function(msg)
             notified = msg
@@ -40,6 +44,7 @@ describe("commands", function()
 
     after_each(function()
         runner.run = run
+        guard.allow = allow
         vim.notify = notify
     end)
 
@@ -51,6 +56,14 @@ describe("commands", function()
             assert.are.equal(2, called.ctx.line1)
             assert.are.equal(4, called.ctx.line2)
             assert.are.equal("python", called.ctx.language)
+        end)
+
+        it(fn .. " does not run when the guard refuses", function()
+            guard.allow = function()
+                return false
+            end
+            mdrun[fn]({ line1 = 3, line2 = 3 })
+            assert.is_nil(called)
         end)
 
         it(fn .. " does not run outside a fenced block", function()

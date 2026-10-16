@@ -5,10 +5,12 @@ local M = {}
 
 ---@class Config
 ---@field split_size number fraction of the editor area used by the runner's terminal
+---@field confirm boolean ask for confirmation before running a block
 
 ---@type Config
 M.config = {
     split_size = 0.35,
+    confirm = true,
 }
 
 ---@param args Config?
@@ -22,7 +24,7 @@ end
 ---@param open string window command opening the runner, e.g. "split"
 local function run(cmd, open)
     local ctx = require("mdrun.parser").parse(require("mdrun.context").new(cmd))
-    if ctx then
+    if ctx and require("mdrun.guard").allow(ctx, M.config.confirm) then
         require("mdrun.runner").run(ctx, open, M.config.split_size)
     end
 end
