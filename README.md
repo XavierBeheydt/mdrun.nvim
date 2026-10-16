@@ -12,6 +12,10 @@
 Lua Neovim plugin: run instructions inside fenced code blocks of
 Markdown files.
 
+> [!WARNING]
+> There is no sandbox: blocks run on your computer. Every run asks for
+> confirmation by default, see [Usage](#usage) to change it.
+
 <!-- panvimdoc-ignore-start -->
 
 ![Demo: running a code block with :MDRun and :VMDRun](demo/demo.gif)
