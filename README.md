@@ -189,7 +189,7 @@ Every run opens a new terminal window.
 
 > [!WARNING]
 > There is no sandbox: blocks run on your computer with your permissions, so a
-> destructive command such as `rm -rf` does real damage. By default, every run
+> destructive command does real damage. By default, every run
 > asks for confirmation and shows the code first. The first run also shows a
 > one-time warning about this. Disable the confirmation with
 > `confirm = false` in [Setup](#setup).
