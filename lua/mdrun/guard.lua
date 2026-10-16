@@ -23,10 +23,13 @@ local function warn_once()
     vim.fn.writefile({}, path)
 end
 
----@param ctx Context block about to run
+---@param ctx Context? block about to run, nil when the parser found none
 ---@param confirm boolean ask before running
 ---@return boolean ok true when the block may run
 function M.allow(ctx, confirm)
+    if not ctx then
+        return false
+    end
     warn_once()
     if not confirm then
         return true

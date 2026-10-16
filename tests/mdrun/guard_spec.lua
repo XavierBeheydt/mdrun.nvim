@@ -34,6 +34,12 @@ describe("guard", function()
         return assert(parser.parse(Context.new({ line1 = 2, line2 = 2 })))
     end
 
+    it("refuses without a block, silently", function()
+        assert.is_false(guard.allow(nil, true))
+        assert.are.equal(0, #notified)
+        assert.are.equal(0, #asked)
+    end)
+
     it("warns about the missing sandbox only once", function()
         guard.allow(ctx(), false)
         guard.allow(ctx(), false)
